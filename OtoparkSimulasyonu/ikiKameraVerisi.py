@@ -3,9 +3,6 @@ import easyocr
 import sqlite3
 from datetime import datetime
 
-# -------------------------
-# 1️⃣ EasyOCR ve Kamera Ayarları
-# -------------------------
 reader = easyocr.Reader(['en'], gpu=False)
 
 # Giriş ve çıkış kameralarının URL'leri
@@ -19,9 +16,6 @@ if not cap_giris.isOpened() or not cap_cikis.isOpened():
     print("Kameralardan biri açılamadı. IP ve bağlantıları kontrol et.")
     exit()
 
-# -------------------------
-# 2️⃣ SQLite Veritabanı
-# -------------------------
 DB_FILE = "parking.db"
 
 def db_init():
@@ -40,9 +34,7 @@ def db_init():
 
 db_init()
 
-# -------------------------
-# 3️⃣ Fonksiyonlar
-# -------------------------
+
 def vehicle_in(plate):
     conn = sqlite3.connect(DB_FILE)
     cur = conn.cursor()
@@ -72,9 +64,7 @@ def current_count():
 # Maksimum otopark kapasitesi
 TOPLAM_YER = 10
 
-# -------------------------
-# 4️⃣ OCR Okuma Fonksiyonu
-# -------------------------
+
 def read_plate(frame):
     results = reader.readtext(frame)
     for (bbox, text, prob) in results:
@@ -83,9 +73,7 @@ def read_plate(frame):
             return text
     return None
 
-# -------------------------
-# 5️⃣ Ana Döngü
-# -------------------------
+
 while True:
     # --- Giriş Kamerası ---
     ret_giris, frame_giris = cap_giris.read()
@@ -111,10 +99,11 @@ while True:
                     (10,30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,0,255), 2)
         cv2.imshow("Çıkış Kamera", frame_cikis)
 
-    # 'q' tuşu ile çıkış
+    # 'q' ile çıkış
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
 cap_giris.release()
 cap_cikis.release()
 cv2.destroyAllWindows()
+
